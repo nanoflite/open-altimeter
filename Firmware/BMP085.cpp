@@ -29,7 +29,13 @@
 
 #include "config.h"
 #include "BMP085.h"
-#include "WProgram.h"
+
+#if defined(ARDUINO) && ARDUINO >= 100
+  #include "Arduino.h"
+#else
+  #include "WProgram.h"
+  #include <pins_arduino.h>
+#endif
 
 #include <Wire.h>
 
@@ -198,13 +204,13 @@ float BMP085::convertToAltitude(uint32_t pressure, float heightUnits)
 uint8_t BMP085::read8bit(uint8_t reg)
 {
   Wire.beginTransmission(BMP085_ADDRESS);
-  Wire.send(reg);
+  Wire.write(reg);
   Wire.endTransmission();
 
   Wire.requestFrom(BMP085_ADDRESS, 1);
   while (Wire.available() < 1) {
   }
-  return (uint8_t)Wire.receive();
+  return (uint8_t)Wire.read();
 }
 
 // reads a byte from the given register and one from the following register, and returns them
@@ -229,8 +235,8 @@ uint32_t BMP085::read24bit(uint8_t reg)
 void BMP085::write8bit(uint8_t reg, uint8_t value)
 {
   Wire.beginTransmission(BMP085_ADDRESS);
-  Wire.send(reg);
-  Wire.send(value);
+  Wire.write(reg);
+  Wire.write(value);
   Wire.endTransmission();
 }
 

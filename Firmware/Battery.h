@@ -17,25 +17,36 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef BEEPER_H
-#define BEEPER_H
+#ifndef BATTERY_H
+#define BATTERY_H
 
-#include "WProgram.h"
+#if defined(ARDUINO) && ARDUINO >= 100
+  #include "Arduino.h"
+#else
+  #include "WProgram.h"
+  #include <pins_arduino.h>
+#endif
+
 #include "config.h"
 
-// this is the basic unit of tune length, in microseconds
-#define TUNE_BASE_PERIOD 25000
+#include "Settings.h"
 
-// the beeper is a namespace, rather than a class, as otherwise it gets messy trying to use ISRs
-namespace Beeper
+class Battery
 {
-  extern void setup(int digitalPin);
-  extern void beep(uint16_t frequency, uint16_t duration);
-  extern void playTune(int16_t* tune);
-  extern void stopTune();
-  extern void waitForTuneToEnd();
-  extern void outputInteger(int integer);
-  extern void test();
+  public:
+    Battery(int analogInputPin);
+    void setup(BatteryType batteryType, float batteryMonitorCalibration, float threshold);
+    float readVoltage();
+    boolean isLow();
+    int numberOfCells();
+    void test();
+  private:
+    int _analogInputPin;
+    int _numberOfCells;
+    boolean _isLow;
+    float _calibration;
+    BatteryType _batteryType;
+    float _threshold;
 };
 
-#endif /*BEEPER_H*/
+#endif /*BATTERY_H*/

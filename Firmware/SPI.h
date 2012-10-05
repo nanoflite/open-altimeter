@@ -17,30 +17,31 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef BATTERY_H
-#define BATTERY_H
+#ifndef SPI_H_
+#define SPI_H_
+#if defined(ARDUINO) && ARDUINO >= 100
+  #include "Arduino.h"
+#else
+  #include "WProgram.h"
+  #include <pins_arduino.h>
+#endif
 
-#include "WProgram.h"
+
 #include "config.h"
 
-#include "Settings.h"
+#define SPI_MOSI_PIN 11
+#define SPI_MISO_PIN 12
+#define SPI_SCLK_PIN 13
 
-class Battery
+class SPI
 {
   public:
-    Battery(int analogInputPin);
-    void setup(BatteryType batteryType, float batteryMonitorCalibration, float threshold);
-    float readVoltage();
-    boolean isLow();
-    int numberOfCells();
-    void test();
-  private:
-    int _analogInputPin;
-    int _numberOfCells;
-    boolean _isLow;
-    float _calibration;
-    BatteryType _batteryType;
-    float _threshold;
+    void setup();
+    void assertSS(int ssPin);
+    void deassertSS(int ssPin);
+    unsigned char exchangeByte(unsigned char data);
 };
 
-#endif /*BATTERY_H*/
+extern SPI Spi;
+
+#endif /*SPI_H_*/

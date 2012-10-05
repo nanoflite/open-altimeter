@@ -22,7 +22,13 @@
 
 #include "AT25DF.h"
 
-#include "WProgram.h"
+#if defined(ARDUINO) && ARDUINO >= 100
+  #include "Arduino.h"
+#else
+  #include "WProgram.h"
+  #include <pins_arduino.h>
+#endif
+
 #include "config.h"
 
 #define DATASTORE_LOG_ENTRY_SIZE sizeof(LogEntry)

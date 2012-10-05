@@ -20,7 +20,12 @@
 #include "config.h"
 #include "Messages.h"
 
-#include "WProgram.h"
+#if defined(ARDUINO) && ARDUINO >= 100
+  #include "Arduino.h"
+#else
+  #include "WProgram.h"
+  #include <pins_arduino.h>
+#endif
 
 // The messages are collected together here to make it easier to store them in flash.
 // This is a bit awkward, as we have to store them all in a table and then index them

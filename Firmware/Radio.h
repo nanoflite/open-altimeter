@@ -17,35 +17,37 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef AT25DF_H
-#define AT25DF_H
+#ifndef RADIO_H
+#define RADIO_H
 
-#include "WProgram.h"
+#if defined(ARDUINO) && ARDUINO >= 100
+  #include "Arduino.h"
+#else
+  #include "WProgram.h"
+  #include <pins_arduino.h>
+#endif
+
 #include "config.h"
 
-#define AT25DF_SIZE 524288
+#define RADIO_SWITCH_OFF 0
+#define RADIO_SWITCH_MID 1
+#define RADIO_SWITCH_ON 2
+// this value is never returned by the radio code, so can be used to ensure that
+// a function can't be activated (used by the 2- and 3-position switch configuration
+// code in Firmware.pde)
+#define RADIO_SWITCH_IMPOSSIBLE 3
 
-class AT25DF
+class Radio
 {
   public:
-    AT25DF(int ssPin);
+    Radio(int inputPin);
     void setup();
-    void getManufacturerInfo(uint8_t* response);
-    void printManufacturerInfo();
-    void readArray(uint32_t startAddress, uint8_t* buffer, uint32_t num);
-    void writeArray(uint32_t startAddress, uint8_t* buffer, uint32_t num);
-    void chipErase();
-    uint8_t readStatusRegister();
-    void waitUntilDone();
-    void writeEnableAndUnprotect();
-    void writeDisable();
+    uint16_t getRawValue();
+    uint8_t getState();
+    uint16_t getServoValueQuick();
     void test();
   private:
-    int _ssPin;
-    void commandAndReadN(uint8_t command, uint8_t* buffer, int n);
-    void commandAndWriteN(uint8_t command, uint8_t* buffer, int n);
-    void command(uint8_t command);
-    void writeAddress(uint32_t address);
+    int _inputPin;
 };
 
-#endif /*AT25DF_H*/
+#endif /*RADIO_H*/

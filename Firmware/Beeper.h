@@ -17,31 +17,31 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RADIO_H
-#define RADIO_H
+#ifndef BEEPER_H
+#define BEEPER_H
 
-#include "WProgram.h"
+#if defined(ARDUINO) && ARDUINO >= 100
+  #include "Arduino.h"
+#else
+  #include "WProgram.h"
+  #include <pins_arduino.h>
+#endif
+
 #include "config.h"
 
-#define RADIO_SWITCH_OFF 0
-#define RADIO_SWITCH_MID 1
-#define RADIO_SWITCH_ON 2
-// this value is never returned by the radio code, so can be used to ensure that
-// a function can't be activated (used by the 2- and 3-position switch configuration
-// code in Firmware.pde)
-#define RADIO_SWITCH_IMPOSSIBLE 3
+// this is the basic unit of tune length, in microseconds
+#define TUNE_BASE_PERIOD 25000
 
-class Radio
+// the beeper is a namespace, rather than a class, as otherwise it gets messy trying to use ISRs
+namespace Beeper
 {
-  public:
-    Radio(int inputPin);
-    void setup();
-    uint16_t getRawValue();
-    uint8_t getState();
-    uint16_t getServoValueQuick();
-    void test();
-  private:
-    int _inputPin;
+  extern void setup(int digitalPin);
+  extern void beep(uint16_t frequency, uint16_t duration);
+  extern void playTune(int16_t* tune);
+  extern void stopTune();
+  extern void waitForTuneToEnd();
+  extern void outputInteger(int integer);
+  extern void test();
 };
 
-#endif /*RADIO_H*/
+#endif /*BEEPER_H*/
